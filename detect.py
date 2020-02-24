@@ -6,6 +6,7 @@ import os
 from dataset import get_rotate_mat
 import numpy as np
 import lanms
+import pdb
 
 
 def resize_img(img):
@@ -104,7 +105,7 @@ def get_boxes(score, geo, score_thresh=0.9, nms_thresh=0.2):
 	xy_text = xy_text[np.argsort(xy_text[:, 0])]
 	valid_pos = xy_text[:, ::-1].copy() # n x 2, [x, y]
 	valid_geo = geo[:, xy_text[:, 0], xy_text[:, 1]] # 5 x n
-	polys_restored, index = restore_polys(valid_pos, valid_geo, score.shape) 
+	polys_restored, index = restore_polys(valid_pos, valid_geo, score.shape)
 	if polys_restored.size == 0:
 		return None
 
@@ -186,7 +187,7 @@ if __name__ == '__main__':
 	res_img     = './res.bmp'
 	device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 	model = EAST().to(device)
-	model.load_state_dict(torch.load(model_path))
+	model.load_state_dict(torch.load(model_path, map_location=device))
 	model.eval()
 	img = Image.open(img_path)
 	
